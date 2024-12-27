@@ -17,32 +17,33 @@ def F(b):
 
     return sum
 
+
 def calculate(ei: float, es: float, nx: float, o: float) -> Tuple[float, float, float]:
     """
     Подсчёт количества годных деталей и брака
-    :param ei: нижний допуск
-    :param es: верхний допуск
-    :param nx: номинальный размер
-    :param o: стандартное отклонение
+    :param ei: нижнее предельное отклонение
+    :param es: верхнее предельное отклонение
+    :param nx: наладочный размер
+    :param o: среднее квадратичное отклонение
     :return: в процентах количество годных деталей, количество неисправимого брака, исправимого брака
     """
     # Определение количества годных деталей
     t2: float = (es-nx) / o
     t1: float = (ei-nx) / o
     p_suitable_parts: float = round((F(t2) - F(t1))*100, 2)
-    print(f"Количество годных деталей: {p_suitable_parts}%")
+    # print(f"Количество годных деталей: {p_suitable_parts}%")
 
     # Определение неисправимого брака
     t2: float = (ei-nx) / o
     t1: float = (nx - 3*o - nx) / o
     p_incorrigible_marriage: float = round((F(t2) - F(t1))*100, 2)
-    print(f"Определение неисправимого брака {p_incorrigible_marriage}%")
+    # print(f"Определение неисправимого брака {p_incorrigible_marriage}%")
 
     # Определение исправимого брака
     t2: float = (nx + 3 * o - nx) / o
     t1: float = (es-nx) / o
     p_fixable_marriage: float = round((F(t2) - F(t1))*100, 2)
-    print(f"Определение исправимого брака {p_fixable_marriage}%")
+    # print(f"Определение исправимого брака {p_fixable_marriage}%")
 
     return p_suitable_parts, p_incorrigible_marriage, p_fixable_marriage
 
