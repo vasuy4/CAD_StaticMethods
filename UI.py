@@ -101,6 +101,7 @@ def start_ui() -> None:
         ax.plot(x, y, lw=2, label="Нормальное распределение")
         suitable_parts, incorrigible_marriage, fixable_marriage = calculate(ei, es, nx, o)
         fill_areas(ax, ei, es, nx, o)
+        draw_lines(ei, es, nx, o, True)
         add_text(ax, nx, o, y, suitable_parts, incorrigible_marriage, fixable_marriage)
         ax.set_xlabel("Значение")
         ax.set_ylabel("Плотность вероятности")
@@ -115,6 +116,47 @@ def start_ui() -> None:
         es_slider.reset()
         nx_slider.reset()
         o_slider.reset()
+
+    def set_default_value_sliders(text: str, slider: Slider):
+        """Обновляет дефолтные значения слайдеров"""
+        ydata: float = float(text)
+        slider.valinit = ydata
+        slider.reset()
+
+    def reset_textbox(event):
+        """Устанавливает значение текстбоксов по умолчанию"""
+        ei_text_box.set_val(str_ei)
+        es_text_box.set_val(str_es)
+        nx_text_box.set_val(str_nx)
+        o_text_box.set_val(str_o)
+
+    def draw_lines(ei: float, es: float, nx: float, o: float, isAgain=False):
+        """Добавляем линии с обозначениями ei es +-3o nx"""
+        nx_x, nx_y = [nx, nx], [0, max(y)]
+        ei_x, ei_y = [ei, ei], [0, max(y)]
+        es_x, es_y = [es, es], [0, max(y)]
+        o_x, o_y = [nx - 3 * o, nx - 3 * o], [0, max(y) / 5]
+        o_x2, o_y2 = [nx + 3 * o, nx + 3 * o], [0, max(y) / 5]
+        # Значение по X -3o и +3o
+        ox1_val = round(nx - 3 * o, 3)
+        ox2_val = round(nx + 3 * o, 3)
+
+        ax.plot(nx_x, nx_y, marker="p", color="green")
+        ax.plot(ei_x, ei_y, marker="p", color="red")
+        ax.plot(es_x, es_y, marker="p", color="orange")
+        ax.plot(o_x, o_y, marker="p", color="gray")
+        ax.plot(o_x2, o_y2, marker="p", color="gray")
+
+        ax.text(nx, -2.3, f'nx={round(nx, 3)}', color='green', ha='center', va='bottom', backgroundcolor='white')
+        ax.text(ei, -2.3, f'ei={round(ei, 3)}', color='red', ha='center', va='bottom', backgroundcolor='white')
+        ax.text(es, -2.3, f'es={round(es, 3)}', color='orange', ha='center', va='bottom', backgroundcolor='white')
+        ax.text(ox1_val, max(y) / 5, f'-3σ={ox1_val}', color='gray', ha='center', va='bottom',
+                backgroundcolor='white')
+        ax.text(ox2_val, max(y) / 5, f'+3σ={ox2_val}', color='gray', ha='center', va='bottom',
+                backgroundcolor='white')
+
+        if isAgain:
+            recommendation_tb.set_val(str(round(ei - ox1_val, 3)))
 
     ei: float = 0.006  # 0.002
     es: float = 0.055  # 0.035
@@ -159,12 +201,7 @@ def start_ui() -> None:
 
     buttonReset.on_clicked(reset_sliders)
 
-    def set_default_value_sliders(text: str, slider: Slider):
-        """Обновляет дефолтные значения слайдеров"""
-        ydata: float = float(text)
-        slider.valinit = ydata
-        slider.reset()
-
+    # Добавляем текстбоксы
     ax_box_ei: plt.Axes = fig.add_axes((0.05, 0.75, 0.05, 0.055))
     ax_box_es: plt.Axes = fig.add_axes((0.05, 0.65, 0.05, 0.055))
     ax_box_nx: plt.Axes = fig.add_axes((0.05, 0.55, 0.05, 0.055))
@@ -180,20 +217,19 @@ def start_ui() -> None:
     nx_text_box.on_submit(lambda val: set_default_value_sliders(val, nx_slider))
     o_text_box.on_submit(lambda val: set_default_value_sliders(val, o_slider))
 
-    def reset_textbox(event):
-        """Устанавливает значение текстбоксов по умолчанию"""
-        ei_text_box.set_val(str_ei)
-        es_text_box.set_val(str_es)
-        nx_text_box.set_val(str_nx)
-        o_text_box.set_val(str_o)
-
     # Кнопка сброса текстбоксов
     resetax_box = fig.add_axes((0.05, 0.35, 0.1, 0.055))
     buttonReset_box = Button(resetax_box, "Reset textbox", hovercolor="0.975")
 
     buttonReset_box.on_clicked(reset_textbox)
 
+    # Рекомендации по смещению наладочного размера
+    recommendation_ax = fig.add_axes((0.4, 0.025, 0.0, 0.04))
+    recommendation_tb = TextBox(recommendation_ax, "Рекомендуется сместить наладочный размер на",
+                                initial=str(round(ei - (nx - 3 * o), 3)))
+    draw_lines(ei, es, nx, o)
     # Добавление текста
+
     ax.set_title("Расчёт процента годных деталей")
     ax.set_xlabel("Значение")
     ax.set_ylabel("Плотность вероятности")
