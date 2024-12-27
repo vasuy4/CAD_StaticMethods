@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider, Button
+from matplotlib.widgets import Slider, Button, TextBox
 import numpy as np
 
 from typing import Tuple, List
@@ -85,7 +85,8 @@ def start_ui() -> None:
         ax.grid(True)
         fig.canvas.draw_idle()
 
-    def reset(event):
+    def reset_sliders(event):
+        """Устанавливает значение слайдеров по умолчанию"""
         ei_slider.reset()
         es_slider.reset()
         nx_slider.reset()
@@ -96,11 +97,15 @@ def start_ui() -> None:
     nx: float = 0.026  # 0.014
     o: float = 0.012  # 0.009
 
+    str_ei = str(ei)
+    str_es = str(es)
+    str_nx = str(nx)
+    str_o = str(o)
     suitable_parts, incorrigible_marriage, fixable_marriage = calculate(ei, es, nx, o)
 
     # Создание фигуры и осей
     fig, ax = plt.subplots()
-    plt.subplots_adjust(bottom=0.4)
+    plt.subplots_adjust(left=0.2, bottom=0.4)
 
     x, y, line = build_graph(ax, nx, o)
     fill_areas(ax, ei, es, nx, o)
@@ -123,18 +128,53 @@ def start_ui() -> None:
     nx_slider.on_changed(update)
     o_slider.on_changed(update)
 
-    # Кнопка сброса
+    # Кнопка сброса слайдеров
     resetax = fig.add_axes((0.8, 0.025, 0.1, 0.04))
-    buttonReset = Button(resetax, 'Reset', hovercolor='0.975')
+    buttonReset = Button(resetax, 'Reset sliders', hovercolor='0.975')
 
-    buttonReset.on_clicked(reset)
+    buttonReset.on_clicked(reset_sliders)
 
+    # Поля ввода для обновления значений по умолчанию
+    def set_default_value_sliders(text, slider):
+        ydata: float = float(text)
+        slider.valinit = ydata
+        slider.reset()
+
+    ax_box_ei: plt.Axes = fig.add_axes((0.05, 0.75, 0.05, 0.055))
+    ax_box_es: plt.Axes = fig.add_axes((0.05, 0.65, 0.05, 0.055))
+    ax_box_nx: plt.Axes = fig.add_axes((0.05, 0.55, 0.05, 0.055))
+    ax_box_o: plt.Axes = fig.add_axes((0.05, 0.45, 0.05, 0.055))
+
+    ei_text_box: TextBox = TextBox(ax_box_ei, 'ei ', initial=str_ei)
+    es_text_box: TextBox = TextBox(ax_box_es, 'es ', initial=str_es)
+    nx_text_box: TextBox = TextBox(ax_box_nx, 'nx ', initial=str_nx)
+    o_text_box: TextBox = TextBox(ax_box_o, 'o ', initial=str_o)
+
+    ei_text_box.on_submit(lambda val: set_default_value_sliders(val, ei_slider))
+    es_text_box.on_submit(lambda val: set_default_value_sliders(val, es_slider))
+    nx_text_box.on_submit(lambda val: set_default_value_sliders(val, nx_slider))
+    o_text_box.on_submit(lambda val: set_default_value_sliders(val, o_slider))
+
+    def reset_textbox(event):
+        """Устанавливает значение текстбоксов по умолчанию"""
+        ei_text_box.set_val(str_ei)
+        es_text_box.set_val(str_es)
+        nx_text_box.set_val(str_nx)
+        o_text_box.set_val(str_o)
+
+    # Кнопка сброса текстбоксов
+    resetax_box = fig.add_axes((0.05, 0.35, 0.1, 0.055))
+    buttonReset_box = Button(resetax_box, 'Reset textbox', hovercolor='0.975')
+
+    buttonReset_box.on_clicked(reset_textbox)
+
+    # Добавление текста
     ax.set_title('Расчёт процента годных деталей')
     ax.set_xlabel('Значение')
     ax.set_ylabel('Плотность вероятности')
     ax.legend()
     ax.grid(True)
-    manager = plt.get_current_fig_manager()
+    manager: plt.FigureManagerBase = plt.get_current_fig_manager()
     manager.resize(1080, 720)
     plt.show()
 
