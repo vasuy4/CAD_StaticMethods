@@ -132,7 +132,6 @@ def start_ui() -> None:
 
     def fix_recommendation(event):
         """Смещает наладочный размер (nx) по рекомендации"""
-        print(recommendation_tb.text)
         nx_text_box.set_val(str(round(nx + float(recommendation_tb.text), 3)))
 
 
