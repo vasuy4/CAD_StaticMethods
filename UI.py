@@ -130,6 +130,12 @@ def start_ui() -> None:
         nx_text_box.set_val(str_nx)
         o_text_box.set_val(str_o)
 
+    def fix_recommendation(event):
+        """Смещает наладочный размер (nx) по рекомендации"""
+        print(recommendation_tb.text)
+        nx_text_box.set_val(str(round(nx + float(recommendation_tb.text), 3)))
+
+
     def draw_lines(ei: float, es: float, nx: float, o: float, isAgain=False):
         """Добавляем линии с обозначениями ei es +-3o nx"""
         nx_x, nx_y = [nx, nx], [0, max(y)]
@@ -157,6 +163,7 @@ def start_ui() -> None:
 
         if isAgain:
             recommendation_tb.set_val(str(round(ei - ox1_val, 3)))
+
 
     ei: float = 0.006  # 0.002
     es: float = 0.055  # 0.035
@@ -224,10 +231,15 @@ def start_ui() -> None:
     buttonReset_box.on_clicked(reset_textbox)
 
     # Рекомендации по смещению наладочного размера
-    recommendation_ax = fig.add_axes((0.4, 0.025, 0.0, 0.04))
-    recommendation_tb = TextBox(recommendation_ax, "Рекомендуется сместить наладочный размер на",
+    recommendation_ax = fig.add_axes((0.4, 0.025, 0.07, 0.04))
+    recommendation_tb = TextBox(recommendation_ax, "Рекомендуется сместить наладочный размер на ",
                                 initial=str(round(ei - (nx - 3 * o), 3)))
     draw_lines(ei, es, nx, o)
+
+    # Автоматическая поправка с помощью кнопки
+    btn_rec_box = fig.add_axes((0.5, 0.025, 0.1, 0.04))
+    btn_recommendation = Button(btn_rec_box, "Fix", hovercolor="0.975")
+    btn_recommendation.on_clicked(fix_recommendation)
     # Добавление текста
 
     ax.set_title("Расчёт процента годных деталей")
