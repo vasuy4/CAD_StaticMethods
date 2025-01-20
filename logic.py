@@ -31,13 +31,14 @@ def F(b: float, n: int = 10000):
     return sum
 
 
-def calculate(ei: float, es: float, nx: float, o: float) -> Tuple[float, float, float]:
+def calculate(ei: float, es: float, nx: float, o: float, n: int = 10000) -> Tuple[float, float, float]:
     """
     Подсчёт количества годных деталей и брака
     :param ei: нижнее предельное отклонение
     :param es: верхнее предельное отклонение
     :param nx: наладочный размер
     :param o: среднее квадратичное отклонение
+    :param n: Точность вычислений
     :return: в процентах количество годных деталей, количество неисправимого брака, исправимого брака
     """
     # Определение количества годных деталей

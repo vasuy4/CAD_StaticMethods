@@ -92,6 +92,7 @@ def start_ui() -> None:
         es = es_slider.val
         nx = nx_slider.val
         o = o_slider.val
+        accuracy = int(val)
 
         x = np.linspace(nx - 3 * o, nx + 3 * o, 1000)
         y = [normal_distribution(xi, nx, o) for xi in x]
@@ -99,7 +100,7 @@ def start_ui() -> None:
 
         ax.clear()
         ax.plot(x, y, lw=2, label="Нормальное распределение")
-        suitable_parts, incorrigible_marriage, fixable_marriage = calculate(ei, es, nx, o)
+        suitable_parts, incorrigible_marriage, fixable_marriage = calculate(ei, es, nx, o, accuracy)
         fill_areas(ax, ei, es, nx, o)
         draw_lines(ei, es, nx, o, True)
         add_text(ax, nx, o, y, suitable_parts, incorrigible_marriage, fixable_marriage)
@@ -163,18 +164,19 @@ def start_ui() -> None:
         if isAgain:
             recommendation_tb.set_val(str(round(ei - ox1_val, 3)))
 
-
     ei: float = 0.006  # 0.002
     es: float = 0.055  # 0.035
     nx: float = 0.026  # 0.014
     o: float = 0.012  # 0.009
+    initial_accuracy: int = 10000
 
     str_ei = str(ei)
     str_es = str(es)
     str_nx = str(nx)
     str_o = str(o)
+    str_ini_acc = str(initial_accuracy)
 
-    suitable_parts, incorrigible_marriage, fixable_marriage = calculate(ei, es, nx, o)
+    suitable_parts, incorrigible_marriage, fixable_marriage = calculate(ei, es, nx, o, initial_accuracy)
 
     # Создание фигуры и осей
     fig, ax = plt.subplots()
@@ -212,16 +214,19 @@ def start_ui() -> None:
     ax_box_es: plt.Axes = fig.add_axes((0.05, 0.65, 0.05, 0.055))
     ax_box_nx: plt.Axes = fig.add_axes((0.05, 0.55, 0.05, 0.055))
     ax_box_o: plt.Axes = fig.add_axes((0.05, 0.45, 0.05, 0.055))
+    ax_box_accuracy: plt.Axes = fig.add_axes((0.1, 0.90, 0.05, 0.055))
 
     ei_text_box: TextBox = TextBox(ax_box_ei, "ei ", initial=str_ei)
     es_text_box: TextBox = TextBox(ax_box_es, "es ", initial=str_es)
     nx_text_box: TextBox = TextBox(ax_box_nx, "nx ", initial=str_nx)
     o_text_box: TextBox = TextBox(ax_box_o, "o ", initial=str_o)
+    accuracy_text_box: TextBox = TextBox(ax_box_accuracy, "Точность ", initial=str_ini_acc)
 
     ei_text_box.on_submit(lambda val: set_default_value_sliders(val, ei_slider))
     es_text_box.on_submit(lambda val: set_default_value_sliders(val, es_slider))
     nx_text_box.on_submit(lambda val: set_default_value_sliders(val, nx_slider))
     o_text_box.on_submit(lambda val: set_default_value_sliders(val, o_slider))
+    accuracy_text_box.on_submit(lambda val: update(val))
 
     # Кнопка сброса текстбоксов
     resetax_box = fig.add_axes((0.05, 0.35, 0.1, 0.055))
