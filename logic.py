@@ -2,18 +2,31 @@ import math
 from typing import Tuple
 
 
-def F(b):
-    def func(z):
-        return (1 / math.sqrt(2 * math.pi)) * math.exp(-(z * z) / 2)
+def normal_distribution(x: float, mu: float = 0, sigma: float = 1):
+    """
+    Вычисляет значение плотности вероятности стандартного нормального распределения в точке x.
+    Т.к. мы используем стандартное распределение, то математическое ожидание nx = 0 и стандартное отклонение o = 1.
+    (по формуле см. теор. часть первую страницу)
+    """
+    return (1 / (sigma * math.sqrt(2 * math.pi))) * math.exp(
+        -0.5 * ((x - mu) / sigma) ** 2
+    )
 
-    a = 0
-    n = 10000
-    dx = (b - a) / n
-    sum = 0
+
+def F(b: float, n: int = 10000):
+    """
+    Вычисляет приближенное значение интеграла от 0 до b функции плотности вероятности стандартного
+    нормального распределения.
+    :param b: Конечная точка интегрирования. Верхний предел интеграла.
+    :param n: Количество разбиений интервала интегрирования. Чем больше n, тем точнее будет результат
+    """
+    a = 0  # начальная точка интегрирования
+    dx = (b - a) / n  # ширина каждого разбиения (шаг интегрирования).
+    sum = 0  # переменная для накопления суммы значений функции на каждом шаге.
 
     for i in range(n):
-        xi = a + i * dx
-        sum += func(xi) * dx
+        xi = a + i * dx  # вычисление текущей точки на интервале интегрирования.
+        sum += normal_distribution(xi) * dx  # добавление площади прямоугольника с высотой func(xi) и шириной dx к общей сумме.
 
     return sum
 
@@ -46,10 +59,3 @@ def calculate(ei: float, es: float, nx: float, o: float) -> Tuple[float, float, 
     # print(f"Определение исправимого брака {p_fixable_marriage}%")
 
     return p_suitable_parts, p_incorrigible_marriage, p_fixable_marriage
-
-
-def normal_distribution(x: float, mu: float = 0, sigma: float = 1):
-    """Вычисление значения плотности вероятности для нормального распределения (по формуле см. теор. часть)"""
-    return (1 / (sigma * math.sqrt(2 * math.pi))) * math.exp(
-        -0.5 * ((x - mu) / sigma) ** 2
-    )
