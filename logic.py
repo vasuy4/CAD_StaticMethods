@@ -2,15 +2,13 @@ import math
 from typing import Tuple
 
 
-def normal_distribution(x: float, mu: float = 0, sigma: float = 1):
+def normal_distribution(x: float, nx: float = 0, o: float = 1):
     """
     Вычисляет значение плотности вероятности стандартного нормального распределения в точке x.
     Т.к. мы используем стандартное распределение, то математическое ожидание nx = 0 и стандартное отклонение o = 1.
     (по формуле см. теор. часть первую страницу)
     """
-    return (1 / (sigma * math.sqrt(2 * math.pi))) * math.exp(
-        -0.5 * ((x - mu) / sigma) ** 2
-    )
+    return (1 / (o * math.sqrt(2 * math.pi))) * math.exp(-0.5 * ((x - nx) / o) ** 2)
 
 
 def F(b: float, n: int = 10000):
