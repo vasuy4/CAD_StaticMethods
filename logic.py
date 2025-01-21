@@ -42,19 +42,19 @@ def calculate(ei: float, es: float, nx: float, o: float, n: int = 10000) -> Tupl
     # Определение количества годных деталей
     t2: float = (es - nx) / o
     t1: float = (ei - nx) / o
-    p_suitable_parts: float = round((F(t2) - F(t1)) * 100, 2)
+    p_suitable_parts: float = round((F(t2, n) - F(t1, n)) * 100, 2)
     # print(f"Количество годных деталей: {p_suitable_parts}%")
 
     # Определение неисправимого брака
     t2: float = (ei - nx) / o
     t1: float = (nx - 3 * o - nx) / o
-    p_incorrigible_marriage: float = round((F(t2) - F(t1)) * 100, 2)
+    p_incorrigible_marriage: float = round((F(t2, n) - F(t1, n)) * 100, 2)
     # print(f"Определение неисправимого брака {p_incorrigible_marriage}%")
 
     # Определение исправимого брака
     t2: float = (nx + 3 * o - nx) / o
     t1: float = (es - nx) / o
-    p_fixable_marriage: float = round((F(t2) - F(t1)) * 100, 2)
+    p_fixable_marriage: float = round((F(t2, n) - F(t1, n)) * 100, 2)
     # print(f"Определение исправимого брака {p_fixable_marriage}%")
 
     return p_suitable_parts, p_incorrigible_marriage, p_fixable_marriage

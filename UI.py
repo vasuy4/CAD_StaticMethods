@@ -92,8 +92,9 @@ def start_ui() -> None:
         es = es_slider.val
         nx = nx_slider.val
         o = o_slider.val
-        accuracy = int(val)
-
+        accuracy: int = int(accuracy_text_box.text)
+        if (accuracy == 0):
+            accuracy = initial_accuracy
         x = np.linspace(nx - 3 * o, nx + 3 * o, 1000)
         y = [normal_distribution(xi, nx, o) for xi in x]
         line.set_data(x, y)
@@ -168,7 +169,7 @@ def start_ui() -> None:
     es: float = 0.055  # 0.035
     nx: float = 0.026  # 0.014
     o: float = 0.012  # 0.009
-    initial_accuracy: int = 10000
+    initial_accuracy: int = 1000
 
     str_ei = str(ei)
     str_es = str(es)
@@ -246,7 +247,7 @@ def start_ui() -> None:
     btn_recommendation.on_clicked(fix_recommendation)
     # Добавление текста
 
-    ax.set_title("Расчёт процента годных деталей")
+    ax.set_title("Расчпределение деталей по качеству")
     ax.set_xlabel("Значение")
     ax.set_ylabel("Плотность вероятности")
     ax.legend()
