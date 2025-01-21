@@ -247,7 +247,7 @@ def start_ui() -> None:
     btn_recommendation.on_clicked(fix_recommendation)
     # Добавление текста
 
-    ax.set_title("Расчпределение деталей по качеству")
+    ax.set_title("Распределение деталей по качеству")
     ax.set_xlabel("Значение")
     ax.set_ylabel("Плотность вероятности")
     ax.legend()
