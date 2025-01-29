@@ -1,11 +1,13 @@
+import time
+
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, TextBox
 import numpy as np
 
 from typing import Tuple, List
 
-from logic import normal_distribution, calculate
-
+# from logic import normal_distribution, calculate
+from Clogic.Clogic import normal_distribution, calculate
 
 def build_graph(
     ax: plt.Axes, nx: float, o: float
@@ -77,9 +79,9 @@ def add_text(
     ax.text(
         nx - 3.5 * o,
         0.8 * max(y),
-        f"Годные детали: {suitable_parts}%\n"
-        f"Неисправимый брак: {incorrigible_marriage}%\n"
-        f"Исправимый брак: {fixable_marriage}%",
+        f"Годные детали: {round(suitable_parts, 2)}%\n"
+        f"Неисправимый брак: {round(incorrigible_marriage, 2)}%\n"
+        f"Исправимый брак: {round(fixable_marriage, 2)}%",
         bbox=dict(facecolor="white", alpha=0.8),
     )
 
@@ -101,7 +103,9 @@ def start_ui() -> None:
 
         ax.clear()
         ax.plot(x, y, lw=2, label="Нормальное распределение")
+        start: float = time.time()
         suitable_parts, incorrigible_marriage, fixable_marriage = calculate(ei, es, nx, o, accuracy)
+        print("Time:", time.time() - start)
         fill_areas(ax, ei, es, nx, o)
         draw_lines(ei, es, nx, o, True)
         add_text(ax, nx, o, y, suitable_parts, incorrigible_marriage, fixable_marriage)
@@ -177,7 +181,9 @@ def start_ui() -> None:
     str_o = str(o)
     str_ini_acc = str(initial_accuracy)
 
+    start: float = time.time()
     suitable_parts, incorrigible_marriage, fixable_marriage = calculate(ei, es, nx, o, initial_accuracy)
+    print("Time:", time.time() - start)
 
     # Создание фигуры и осей
     fig, ax = plt.subplots()
