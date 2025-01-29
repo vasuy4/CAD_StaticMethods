@@ -103,9 +103,9 @@ def start_ui() -> None:
 
         ax.clear()
         ax.plot(x, y, lw=2, label="Нормальное распределение")
-        start: float = time.time()
+
         suitable_parts, incorrigible_marriage, fixable_marriage = calculate(ei, es, nx, o, accuracy)
-        print("Time:", time.time() - start)
+
         fill_areas(ax, ei, es, nx, o)
         draw_lines(ei, es, nx, o, True)
         add_text(ax, nx, o, y, suitable_parts, incorrigible_marriage, fixable_marriage)
@@ -181,9 +181,7 @@ def start_ui() -> None:
     str_o = str(o)
     str_ini_acc = str(initial_accuracy)
 
-    start: float = time.time()
     suitable_parts, incorrigible_marriage, fixable_marriage = calculate(ei, es, nx, o, initial_accuracy)
-    print("Time:", time.time() - start)
 
     # Создание фигуры и осей
     fig, ax = plt.subplots()
