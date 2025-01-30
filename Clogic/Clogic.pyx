@@ -1,13 +1,13 @@
 import cython
 from libc.math cimport exp, sqrt, M_PI
 
-cdef float normal_distributionC(float x, float nx=0, float o=1) nogil:
+cdef float normal_distributionC(float x, float nx=0, float o=1):
     return (1 / (o * sqrt(2 * M_PI))) * exp(-0.5 * ((x - nx) / o) ** 2)
 
-cpdef float normal_distribution(float x, float nx=0, float o=1) nogil:
+cpdef float normal_distribution(float x, float nx=0, float o=1):
     return (1 / (o * sqrt(2 * M_PI))) * exp(-0.5 * ((x - nx) / o) ** 2)
 
-cdef float F(float b, int n=10000) nogil:
+cdef float F(float b, int n=10000):
     cdef int a = 0
     cdef float dx = (b - a) / n
     cdef float sum = 0
